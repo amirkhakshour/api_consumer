@@ -3,7 +3,7 @@ from api_consumer.endpoints.abc import APIEndpoint
 
 class TestAPIEndpoint(object):
     class MyAPIEndpoint(APIEndpoint):
-        pass
+        obj_name = "people"
 
     def test_list(self):
         res = self.MyAPIEndpoint.list()
