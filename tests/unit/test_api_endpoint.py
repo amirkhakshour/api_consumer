@@ -1,2 +1,9 @@
-def test_x(request_mock):
-    pass
+from api_consumer.endpoints.abc import APIEndpoint
+
+
+class TestAPIEndpoint(object):
+    class MyAPIEndpoint(APIEndpoint):
+        pass
+
+    def test_list(self):
+        pass
