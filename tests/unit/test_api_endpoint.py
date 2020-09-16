@@ -6,4 +6,5 @@ class TestAPIEndpoint(object):
         pass
 
     def test_list(self):
-        pass
+        res = self.MyAPIEndpoint.list()
+        assert isinstance(res, list)
