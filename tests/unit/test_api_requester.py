@@ -38,6 +38,7 @@ class TestAPIRequester(object):
         cases = (
             (base_url, "", {}),
             ("%sendpoint1" % base_url, "endpoint1", {}),
+            ("%sendpoint1?foo=bar" % base_url, "endpoint1", {"foo": "bar"}),
         )
         for expected, url, params in cases:
             mock_response("{}", 200)
