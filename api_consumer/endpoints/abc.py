@@ -17,6 +17,6 @@ class APIEndpoint:
 
     @classmethod
     def list(cls, **params):
-        url = '%s%s' % (settings.API_BASE_URL, cls.type_url())
+        url = cls.type_url()
         requester = cls.api_requester()
         return requester.request("get", url, params)
