@@ -5,6 +5,7 @@ from api_consumer import settings
 
 class APIEndpoint:
     """APIEndpoint base class"""
+
     api_requester = APIRequester
 
     def __init__(self):
