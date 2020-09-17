@@ -12,8 +12,7 @@ class APIRequester:
         self._client = client or self.client()
 
     def request(self, method, url, params=None):
-        """
-
+        """Sends request and process response.
         :param method: HTTP Methods
         :param url: relative URL to API base url
         :param params: additional params for API request

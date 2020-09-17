@@ -1,0 +1,25 @@
+repos:
+  - repo: https://github.com/ambv/black
+    rev: 19.10b0
+    hooks:
+      - id: black
+        language_version: python3.8
+        files: ^api_consumer/
+
+  - repo: https://github.com/pycqa/pydocstyle
+    rev: 4.0.0
+    hooks:
+      - id: pydocstyle
+        files: ^api_consumer/
+        args:
+          - --select=D204,D201,D209,D210,D212,D300,D403
+
+  - repo: local
+    hooks:
+      - id: pytest-cov
+        name: pytest coverage
+        stages: [push]
+        language: system
+        entry: pytest --cov=api_consumer --cov-report=term-missing
+        types: [python]
+        pass_filenames: false
