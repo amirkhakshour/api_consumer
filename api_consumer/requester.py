@@ -28,7 +28,7 @@ class APIRequester:
         :return:
         """
         abs_url = self.build_url(url, params)
-        content, status_code, headers = self._client.request(method, abs_url)
+        content, status_code, headers = self._client.retry_request(method, abs_url)
         return self.interpret_response(content, status_code, headers)
 
     def interpret_response(self, content, status_code, headers):

@@ -1,6 +1,9 @@
 import abc
 import requests
+from retry import retry
+
 from api_consumer import exceptions
+from api_consumer import settings
 
 
 class RequesterClient(abc.ABC):
@@ -22,6 +25,14 @@ class RequesterClient(abc.ABC):
         raise NotImplementedError(
             "RequesterClient children must implement `handle_request_error` method!"
         )
+
+    @retry(
+        exceptions.APIConnectionError,
+        tries=settings.MAX_NETWORK_RETRIES,
+        delay=settings.DELAY_NETWORK_RETRY,
+    )
+    def retry_request(self, method, url, headers=None, **kwargs):
+        return self.request(method, url, headers, **kwargs)
 
 
 class RequestsRequesterClient(RequesterClient):
