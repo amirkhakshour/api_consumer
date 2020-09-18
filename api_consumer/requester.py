@@ -1,8 +1,10 @@
-import json
 from urllib.parse import urlencode
 from api_consumer import settings
+
+from api_consumer import exceptions
 from api_consumer.clients import RequestsRequesterClient
 from api_consumer.urls import encode_url_params, build_api_url
+from api_consumer.response import EndpointResponse
 
 
 class APIRequester:
@@ -31,7 +33,17 @@ class APIRequester:
         content, status_code, headers = self._client.retry_request(method, abs_url)
         return self.interpret_response(content, status_code, headers)
 
-    def interpret_response(self, content, status_code, headers):
-        if hasattr(content, "decode"):
-            content = content.decode("utf-8")
-        return json.loads(content)
+    def interpret_response(self, resp_body, resp_code, resp_headers):
+        try:
+            if hasattr(resp_body, "decode"):
+                resp_body = resp_body.decode("utf-8")
+            response = EndpointResponse(resp_body, resp_code, resp_headers)
+        except Exception:
+            raise exceptions.APIError(
+                "Invalid response body from API: %s "
+                "(HTTP response code was %d)" % (resp_body, resp_code),
+                resp_body,
+                resp_code,
+                resp_headers,
+            )
+        return response
