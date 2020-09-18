@@ -18,7 +18,7 @@ class TestAPIRequester(object):
     @pytest.fixture
     def mock_response(self, mocker, http_client):
         def mock_response(return_content, return_code, return_headers=None):
-            http_client.request = mocker.Mock(
+            http_client.retry_request = mocker.Mock(
                 return_value=(return_content, return_code, return_headers or {})
             )
 
@@ -27,7 +27,7 @@ class TestAPIRequester(object):
     @pytest.fixture
     def check_call(self, http_client):
         def check_call(method, abs_url=settings.API_BASE_URL):
-            http_client.request.assert_called_with(
+            http_client.retry_request.assert_called_with(
                 method, abs_url
             )
 
