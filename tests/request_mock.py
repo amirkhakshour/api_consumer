@@ -1,5 +1,6 @@
 import json
 import api_consumer
+from api_consumer.response import EndpointResponse
 
 
 class RequestHandlerStub(object):
@@ -20,7 +21,8 @@ class RequestHandlerStub(object):
             resp_body, resp_code, resp_headers = self._lookups.pop((method, url))
             if not isinstance(resp_body, str):
                 resp_body = json.dumps(resp_body)
-            return resp_body
+            endpoint_response = EndpointResponse(resp_body, resp_code, resp_headers)
+            return endpoint_response
 
         return None
 
