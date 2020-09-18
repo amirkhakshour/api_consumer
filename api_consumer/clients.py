@@ -1,5 +1,6 @@
 import abc
 import requests
+from api_consumer import exceptions
 
 
 class RequesterClient(abc.ABC):
@@ -16,13 +17,43 @@ class RequesterClient(abc.ABC):
             "RequesterClient children must provide `name` property!"
         )
 
+    @abc.abstractmethod
+    def handle_request_error(self, e):
+        raise NotImplementedError(
+            "RequesterClient children must implement `handle_request_error` method!"
+        )
+
 
 class RequestsRequesterClient(RequesterClient):
     name = "requests"
 
+    def handle_request_error(self, e):
+        msg = "Unexpected error happened during communicating with Endpoint."
+        if isinstance(
+            e, (requests.exceptions.Timeout, requests.exceptions.ConnectionError,)
+        ):
+            err = "%s: %s" % (type(e).__name__, str(e))
+            should_retry = True
+        elif isinstance(e, requests.exceptions.RequestException):
+            err = "%s: %s" % (type(e).__name__, str(e))
+            should_retry = False
+        else:
+            err = "A %s was raised" % (type(e).__name__,)
+            if str(e):
+                err += " with error message %s" % (str(e),)
+            else:
+                err += " with no error message"
+            should_retry = False
+
+        msg = msg + "\n\n(Network error: %s)" % (err,)
+        raise exceptions.APIConnectionError(msg, should_retry=should_retry)
+
     def request(self, method, url, headers=None, **kwargs):
         session = requests.Session()
-        resp = session.request(method, url)
-        content = resp.content
-        status_code = resp.status_code
-        return content, status_code, resp.headers
+        try:
+            result = session.request(method, url)
+            content = result.content
+            status_code = result.status_code
+        except Exception as e:
+            self.handle_request_error(e)
+        return content, status_code, result.headers
