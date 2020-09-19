@@ -9,6 +9,10 @@ class TestAPIEndpoint(object):
     class MyAPIEndpoint(APIEndpoint):
         obj_name = "people"
 
+        @classmethod
+        def convert_response(cls, response):
+            return response
+
     def test_is_listable(self, request_mock):
         expected_response = [{"field": "value"}]
         request_mock.stub_request(
