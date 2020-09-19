@@ -23,3 +23,4 @@ class TestAPIEndpoint(object):
     def test_is_retrievable(self, request_mock):
         resources = self.MyAPIEndpoint.retrieve(TEST_RESOURCE_ID)
         request_mock.assert_requested("get", "people/%s" % TEST_RESOURCE_ID)
+
