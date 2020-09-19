@@ -1,8 +1,11 @@
 import abc
 from marshmallow import EXCLUDE
 from urllib.parse import quote_plus
+from cachetools import cached, TTLCache
+
 from api_consumer.requester import APIRequester
 from api_consumer.response import EndpointResponse
+from api_consumer import settings
 
 
 class APIEndpoint(abc.ABC):
@@ -25,6 +28,11 @@ class APIEndpoint(abc.ABC):
         return "%s/%s" % (base, _id_encoded)
 
     @classmethod
+    @cached(
+        cache=TTLCache(
+            maxsize=settings.CACHED_LIST_MAX_ITEMS, ttl=settings.CACHED_LIST_ENDPOINTS
+        )
+    )
     def list(cls, **params):
         url = cls.type_url()
         requester = cls.api_requester()
@@ -32,6 +40,12 @@ class APIEndpoint(abc.ABC):
         return cls.convert_response(response)
 
     @classmethod
+    @cached(
+        cache=TTLCache(
+            maxsize=settings.CACHED_RETRIEVE_MAX_ITEMS,
+            ttl=settings.CACHED_RETRIEVE_ENDPOINTS,
+        )
+    )
     def retrieve(cls, _id, **params):
         requester = cls.api_requester()
         url = cls.instance_url(_id)
