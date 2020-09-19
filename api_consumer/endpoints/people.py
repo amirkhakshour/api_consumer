@@ -1,4 +1,3 @@
-from functools import lru_cache
 from marshmallow import Schema, fields, EXCLUDE
 from api_consumer.endpoints import abc
 from api_consumer.endpoints.film import Film, FilmEndpointSchema
@@ -9,8 +8,12 @@ class PeopleEndpointSchema(Schema):
     name = fields.String()
     gender = fields.String()
     films = fields.Method(data_key="films", deserialize="load_films")
+    age = fields.String()
+    eye_color = fields.String()
+    hair_color = fields.String()
+    species = fields.String()  # TODO load from Species endpoint
+    url = fields.String()
 
-    @lru_cache
     def extract_film_uuid(self, film_uuids):
         return film_uuids.rsplit("/", 1)[-1]
 
