@@ -1,6 +1,8 @@
 import pytest
+import json
 import api_consumer
 from api_consumer import settings
+from api_consumer.response import EndpointResponse
 
 
 class TestAPIRequester(object):
@@ -44,3 +46,15 @@ class TestAPIRequester(object):
             mock_response("{}", 200)
             requester.request("get", url, params)
             check_call("get", expected)
+
+    def test_returns_endpoint_response(self, requester, mock_response, check_call):
+        method = 'get'
+        mock_response("{}", 200)
+
+        response = requester.request(method, "", {})
+
+        check_call(method)
+        assert isinstance(response, EndpointResponse)
+
+        assert response.data == {}
+        assert response.data == json.loads(response.body)
