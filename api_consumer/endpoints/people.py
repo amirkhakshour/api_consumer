@@ -32,3 +32,20 @@ class People(abc.APIEndpointSchemaConverter, abc.APIEndpoint):
     name = "people"
     obj_name = "people"
     schema = PeopleEndpointSchema
+
+    @classmethod
+    def nested_by_films(cls):
+        """Returns list of movies with list of people in each movie.
+        :return:
+        """
+        output = dict()
+        for people in cls.list():
+            for film in people["films"]:
+                # override people with empty list
+                film["people"] = []
+                film_uuid = str(film["id"])
+                _people = dict(people)
+                _people.pop("films")
+                output.setdefault(film_uuid, film)
+                output[film_uuid]["people"].append(_people)
+        return output
