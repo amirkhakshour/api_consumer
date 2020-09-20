@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./compose/local/app/Dockerfile
+    image: api_consumer_app
+    container_name: api-consumer-app
+    volumes:
+      - .:/app
+    command: /start
+    networks:
+      - nginx_network
+
+  app-nginx:
+    image: 'nginx:1.17'
+    container_name: api-consumer-nginx
+    volumes:
+      - './compose/local/nginx/default.conf:/etc/nginx/conf.d/default.conf'
+    depends_on:
+      - 'app'
+    ports:
+      - "${NGINX_EXTERNAL_PORT}:8000"
+    networks:
+      - nginx_network
+
+networks:
+  nginx_network:
+    driver: bridge
