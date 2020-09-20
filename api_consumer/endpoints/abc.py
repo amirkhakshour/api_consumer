@@ -62,7 +62,7 @@ class APIEndpoint(abc.ABC):
         if isinstance(response, list):
             return [cls.convert_response(item) for item in response]
         elif isinstance(response, dict):
-            return cls.construct_from(response)
+            return cls.construct_from(dict(response))
         else:
             return response
 
