@@ -1,4 +1,3 @@
-import pprint
 from flask import Flask, jsonify
 from api_consumer.endpoints.people import People
 

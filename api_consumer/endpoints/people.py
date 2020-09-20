@@ -24,7 +24,7 @@ class PeopleEndpointSchema(Schema):
         for _uuid in film_uuids:
             film_uuid = self.extract_film_uuid(_uuid)
             film = Film.retrieve(_id=film_uuid)
-            films.append(FilmEndpointSchema().load(film, unknown=EXCLUDE))
+            films.append(FilmEndpointSchema().load(dict(film), unknown=EXCLUDE))
         return films
 
 
