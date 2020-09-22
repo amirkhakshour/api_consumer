@@ -41,7 +41,7 @@ $ docker-compose up
 ```
 you can access the API using the following url:
 ```
-http://127.0.0.1:8080
+http://127.0.0.1:8080/movies
 ```
 ### 2- install locally without docker
 Installing the app on your local machine, you can run tests and 
